@@ -1,0 +1,7 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Bluetooth Settings
+Exec=ts-bt
+Icon=preferences-system-bluetooth
