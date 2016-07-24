@@ -14,6 +14,9 @@
 #include <BluezQt/InitManagerJob>
 #include <BluezQt/PendingCall>
 #include <BluezQt/Adapter>
+#include <BluezQt/MediaPlayer>
+#include <BluezQt/Profile>
+#include <BluezQt/Services>
 #include "mainwindow.h"
 
 using namespace BluezQt;
@@ -32,6 +35,7 @@ public:
     void requestPinCode(DevicePtr device, const Request<QString> &request);
     void displayPasskey(DevicePtr device, const QString &passkey, const QString &entered);
     void requestConfirmation(DevicePtr device, const QString &passkey, const Request<> &request);
+    void authorizeService(DevicePtr device, const QString &uuid, const Request<> &request);
     void cancel();
 
     Manager* btMan;
@@ -43,7 +47,6 @@ private slots:
 public Q_SLOTS:
     Q_SCRIPTABLE void showSettings();
     Q_SCRIPTABLE void exit();
-
 
 private:
     Request<> currentRequest;

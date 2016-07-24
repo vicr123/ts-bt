@@ -3,6 +3,8 @@
 #include <QApplication>
 #include <QSharedMemory>
 #include <QDebug>
+#include <QDBusConnection>
+#include <QDBusConnectionInterface>
 
 MainWindow* MainWin;
 BTDBus* dbusHandler;
@@ -25,11 +27,23 @@ int main(int argc, char *argv[])
         }
     }
 
-    dbusHandler = new BTDBus;
+    bool alreadyRunning = false;
+    if (QDBusConnection::sessionBus().interface()->registeredServiceNames().value().contains("org.thesuite.tsbt")) {
+        alreadyRunning = true;
+    }
 
-    MainWin = new MainWindow();
-    if (showWindow) {
-        MainWin->show();
+    if (alreadyRunning) {
+        QDBusMessage message = QDBusMessage::createMethodCall("org.thesuite.tsbt", "/org/thesuite/tsbt", "org.thesuite.tsbt", "showSettings");
+        QDBusConnection::sessionBus().call(message);
+
+        qDebug() << "ts-bt is already running. Showing settings window in already running session.";
+        return 0;
+    } else {
+        dbusHandler = new BTDBus;
+        MainWin = new MainWindow();
+        if (showWindow) {
+            MainWin->show();
+        }
     }
 
     return a.exec();

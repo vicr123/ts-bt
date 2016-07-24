@@ -72,11 +72,27 @@ void BTDBus::requestAuthorization(DevicePtr device, const Request<> &request) {
 }
 
 void BTDBus::requestPinCode(DevicePtr device, const Request<QString> &request) {
-    request.accept("123456");
+
 }
 
 void BTDBus::displayPasskey(DevicePtr device, const QString &passkey, const QString &entered) {
-    qDebug() << device.data()->name() + " " + passkey;
+    QDBusInterface interface("org.freedesktop.Notifications", "/org/freedesktop/Notifications", "org.freedesktop.Notifications");
+    QVariantMap hints;
+    hints.insert("transient", true);
+
+    QStringList actions;
+    actions.append("true");
+    actions.append("Pair");
+    actions.append("false");
+    actions.append("Cancel");
+
+    QList<QVariant> args;
+    args << "ts-bt" << notificationNumber << "" << "Bluetooth Pairing" <<
+                            "Enter " + passkey + " on " + device.data()->name() + " to pair with this PC." <<
+                            actions << hints << (int) 0;
+
+    QDBusReply<uint> reply = interface.callWithArgumentList(QDBus::Block, "Notify", args);
+    this->notificationNumber = reply.value();
 }
 
 void BTDBus::requestConfirmation(DevicePtr device, const QString &passkey, const Request<> &request) {
@@ -95,6 +111,28 @@ void BTDBus::requestConfirmation(DevicePtr device, const QString &passkey, const
     QList<QVariant> args;
     args << "ts-bt" << notificationNumber << "" << "Bluetooth Pairing" <<
                             device.data()->name() + " wants to pair with your PC. Check that the passcode <b>" + passkey + "</b> matches the one shown on the device." <<
+                            actions << hints << (int) 0;
+
+    QDBusReply<uint> reply = interface.callWithArgumentList(QDBus::Block, "Notify", args);
+    this->notificationNumber = reply.value();
+}
+
+void BTDBus::authorizeService(DevicePtr device, const QString &uuid, const Request<> &request) {
+    currentRequest = request;
+
+    QDBusInterface interface("org.freedesktop.Notifications", "/org/freedesktop/Notifications", "org.freedesktop.Notifications");
+    QVariantMap hints;
+    hints.insert("transient", true);
+
+    QStringList actions;
+    actions.append("true");
+    actions.append("OK");
+    actions.append("false");
+    actions.append("Cancel");
+
+    QList<QVariant> args;
+    args << "ts-bt" << notificationNumber << "" << "Bluetooth Connection" <<
+                            device.data()->name() + " wants to connect to your PC." <<
                             actions << hints << (int) 0;
 
     QDBusReply<uint> reply = interface.callWithArgumentList(QDBus::Block, "Notify", args);

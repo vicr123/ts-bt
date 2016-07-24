@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QMenu>
+#include <QDBusMessage>
+#include <QDBusReply>
 #include "btdbus.h"
 
 using namespace BluezQt;
@@ -41,6 +44,8 @@ private slots:
     void on_connectButton_clicked();
 
     void on_disconnectButton_clicked();
+
+    void on_bluetoothEnabled_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;
