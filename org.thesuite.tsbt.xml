@@ -1,6 +1,10 @@
 <!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
   <interface name="org.thesuite.tsbt">
+    <property name="BluetoothEnabled" type="b" access="readwrite"/>
+    <property name="isConnected" type="b" access="read"/>
+    <signal name="BluetoothEnabledChanged">
+    </signal>
     <method name="showSettings">
     </method>
     <method name="exit">

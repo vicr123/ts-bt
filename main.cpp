@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "btdbus.h"
+#include "obexagent.h"
 #include <QApplication>
 #include <QSharedMemory>
 #include <QDebug>
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
         return 0;
     } else {
         dbusHandler = new BTDBus;
+        new OBEXAgent();
         MainWin = new MainWindow();
         if (showWindow) {
             MainWin->show();

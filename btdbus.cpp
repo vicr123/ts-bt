@@ -31,6 +31,10 @@ BTDBus::BTDBus(QObject *parent) : BluezQt::Agent(parent)
     job->start();
 
     //while (!jobComplete) {};
+
+    connect(btMan, &Manager::bluetoothBlockedChanged, [=]() {
+        emit BluetoothEnabledChanged();
+    });
 }
 
 void BTDBus::showSettings() {
@@ -143,6 +147,14 @@ void BTDBus::cancel() {
 
 }
 
+bool BTDBus::BluetoothEnabled() {
+    return !btMan->isBluetoothBlocked();
+}
+
+void BTDBus::setBluetoothEnabled(bool enabled) {
+    btMan->setBluetoothBlocked(!enabled);
+}
+
 void BTDBus::ActionInvoked(uint id, QString action) {
     if (id == this->notificationNumber) {
         if (action == "true") {
@@ -151,4 +163,14 @@ void BTDBus::ActionInvoked(uint id, QString action) {
             currentRequest.reject();
         }
     }
+}
+
+bool BTDBus::isConnected() {
+    bool connected = false;
+    for (DevicePtr device : btMan->devices()) {
+        if (device.data()->isConnected()) {
+            connected = true;
+        }
+    }
+    return connected;
 }

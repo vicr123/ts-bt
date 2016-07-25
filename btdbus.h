@@ -26,6 +26,9 @@ class BTDBus : public BluezQt::Agent
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.thesuite.tsbt")
 
+    Q_PROPERTY(bool BluetoothEnabled READ BluetoothEnabled WRITE setBluetoothEnabled NOTIFY BluetoothEnabledChanged)
+    Q_PROPERTY(bool isConnected READ isConnected)
+
 public:
     explicit BTDBus(QObject *parent = 0);
 
@@ -38,8 +41,14 @@ public:
     void authorizeService(DevicePtr device, const QString &uuid, const Request<> &request);
     void cancel();
 
+    bool BluetoothEnabled();
+    void setBluetoothEnabled(bool enabled);
+
+    bool isConnected();
+
     Manager* btMan;
 signals:
+    Q_SCRIPTABLE void BluetoothEnabledChanged();
 
 private slots:
     void ActionInvoked(uint id, QString action);
@@ -52,6 +61,7 @@ private:
     Request<> currentRequest;
 
     uint notificationNumber = 0;
+
 };
 
 #endif // BTDBUS_H

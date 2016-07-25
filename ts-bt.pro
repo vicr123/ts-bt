@@ -19,9 +19,11 @@ mainDBus.files = org.thesuite.tsbt.xml
 
 SOURCES += main.cpp\
     btdbus.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    obexagent.cpp
 
 HEADERS  += mainwindow.h \
-    btdbus.h
+    btdbus.h \
+    obexagent.h
 
 FORMS    += mainwindow.ui

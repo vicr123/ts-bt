@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->paneSelection->addItem(new QListWidgetItem(QIcon::fromTheme("smartphone"), "Devices"));
     ui->paneSelection->addItem(new QListWidgetItem(QIcon::fromTheme("preferences-system-bluetooth"), "Settings"));
 
+    ui->devControlFrame->setVisible(false);
+
     connect(dbusHandler->btMan, SIGNAL(deviceAdded(DevicePtr)), this, SLOT(reloadDevices()));
     connect(dbusHandler->btMan, SIGNAL(deviceRemoved(DevicePtr)), this, SLOT(reloadDevices()));
     connect(dbusHandler->btMan, SIGNAL(deviceChanged(DevicePtr)), this, SLOT(reloadDevices()));
@@ -19,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(dbusHandler->btMan, SIGNAL(bluetoothBlockedChanged(bool)), this, SLOT(reloadAdapter()));
 
     reloadDevices();
+    reloadAdapter();
 }
 
 MainWindow::~MainWindow()
@@ -53,7 +56,12 @@ void MainWindow::reloadDevices() {
 
 void MainWindow::reloadAdapter() {
     Adapter* adp = dbusHandler->btMan->usableAdapter().data();
-    if (adp != NULL) {
+    if (adp == NULL) {
+        if (dbusHandler->btMan->isBluetoothBlocked()) {
+            ui->visibleLabel->setVisible(true);
+            ui->visibleLabel->setText("Bluetooth has been turned off.");
+        }
+    } else {
         ui->visibilityBox->setChecked(adp->isDiscoverable());
         ui->visibleLabel->setVisible(adp->isDiscoverable());
         ui->visibleLabel->setText("Your device is visible under the name \"" + adp->name() + "\"");
