@@ -60,7 +60,15 @@ void MainWindow::reloadAdapter() {
         if (dbusHandler->btMan->isBluetoothBlocked()) {
             ui->visibleLabel->setVisible(true);
             ui->visibleLabel->setText("Bluetooth has been turned off.");
-        }
+        }/* else {
+            if (dbusHandler->btMan->adapters().count() == 0) {
+                ui->visibleLabel->setVisible(true);
+                ui->visibleLabel->setText("No bluetooth adapters were found.");
+            } else {
+                dbusHandler->btMan->adapters().first().data()->setPowered(true);
+                reloadAdapter();
+            }
+        }*/
     } else {
         ui->visibilityBox->setChecked(adp->isDiscoverable());
         ui->visibleLabel->setVisible(adp->isDiscoverable());
@@ -248,7 +256,9 @@ void MainWindow::on_scanButton_clicked()
 
 void MainWindow::on_visibilityBox_toggled(bool checked)
 {
-    dbusHandler->btMan->usableAdapter().data()->setDiscoverable(checked);
+    if (dbusHandler->btMan->usableAdapter()) {
+        dbusHandler->btMan->usableAdapter().data()->setDiscoverable(checked);
+    }
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -264,4 +274,29 @@ void MainWindow::on_disconnectButton_clicked()
 void MainWindow::on_bluetoothEnabled_toggled(bool checked)
 {
     dbusHandler->btMan->setBluetoothBlocked(!checked);
+    for (AdapterPtr adapter : dbusHandler->btMan->adapters()) {
+        adapter.data()->setPowered(true);
+    }
+}
+
+void MainWindow::on_sendFileButton_clicked()
+{
+    QFileDialog* dialog = new QFileDialog();
+    dialog->setAcceptMode(QFileDialog::AcceptOpen);
+    if (dialog->exec() == QFileDialog::Accepted) {
+        QVariantMap SessionArgs;
+        SessionArgs.insert("target", "opp");
+        SessionArgs.insert("source", dbusHandler->btMan->usableAdapter().data()->address());
+
+        PendingCall* SessionCreate = dbusHandler->obexMan->createSession(devices.at(ui->devicesList->currentRow())->address(), SessionArgs);
+        SessionCreate->waitForFinished();
+        qDebug() << SessionCreate->error();
+
+        ObexObjectPush push(QDBusObjectPath(SessionCreate->value().value<QString>()));
+
+        PendingCall* FileSend = push.sendFile(dialog->selectedFiles().first());
+        FileSend->waitForFinished();
+        qDebug() << FileSend->errorText();
+        //FileSend.value().value<ObexTransfer*>()
+    }
 }

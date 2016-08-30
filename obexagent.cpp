@@ -8,10 +8,12 @@ OBEXAgent::OBEXAgent(QObject *parent) : ObexAgent(parent)
     QDBusConnection dbus = QDBusConnection::sessionBus();
     dbus.connect("org.freedesktop.Notifications", "/org/freedesktop/Notifications", "org.freedesktop.Notifications", "ActionInvoked", this, SLOT(ActionInvoked(uint,QString)));
     ObexMan = new ObexManager;
+    dbusHandler->obexMan = ObexMan;
 
     bool jobComplete = false;
     InitObexManagerJob* job = ObexMan->init();
     connect(job, &InitObexManagerJob::result, [=, &jobComplete]() {
+        this->ObexMan->startService()->waitForFinished();
         PendingCall* calls;
         calls = ObexMan->registerAgent(this);
         calls->waitForFinished();
@@ -27,7 +29,8 @@ QDBusObjectPath OBEXAgent::objectPath() const {
 }
 
 void OBEXAgent::authorizePush(ObexTransferPtr transfer, ObexSessionPtr session, const Request<QString> &request) {
-
+    qDebug() << session.data()->objectPath().path();
+    qDebug() << transfer.data()->size();
     currentRequest = request;
     currentTransfer = transfer;
     fileType = transfer.data()->type();
@@ -74,11 +77,12 @@ void OBEXAgent::ActionInvoked(uint id, QString action) {
             if (dialog->exec() == QFileDialog::Accepted) {
                 QString fileName = dialog->selectedFiles().first();
                 currentRequest.accept("/home/victor/.testfile.png");
+                qDebug() << currentTransfer.data()->fileName();
             } else {
-                currentRequest.reject();
+                currentRequest.cancel();
             }
         } else {
-            currentRequest.reject();
+            currentRequest.cancel();
         }
     }
 }

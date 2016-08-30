@@ -47,6 +47,7 @@ public:
     bool isConnected();
 
     Manager* btMan;
+    ObexManager* obexMan;
 signals:
     Q_SCRIPTABLE void BluetoothEnabledChanged();
 

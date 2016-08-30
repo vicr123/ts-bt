@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setQuitOnLastWindowClosed(false);
 
-    bool showWindow;
+    bool showWindow = false;
 
     for (QString arg : a.arguments()) {
         if (arg == "--help" || arg == "-h") {

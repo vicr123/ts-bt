@@ -14,7 +14,8 @@
    <string>Bluetooth</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="preferences-system-bluetooth"/>
+   <iconset theme="preferences-system-bluetooth">
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -122,7 +123,8 @@
                   <string>Pair</string>
                  </property>
                  <property name="icon">
-                  <iconset theme="list-add"/>
+                  <iconset theme="list-add">
+                   <normaloff>.</normaloff>.</iconset>
                  </property>
                 </widget>
                </item>
@@ -132,7 +134,8 @@
                   <string>Remove</string>
                  </property>
                  <property name="icon">
-                  <iconset theme="edit-delete"/>
+                  <iconset theme="edit-delete">
+                   <normaloff>.</normaloff>.</iconset>
                  </property>
                 </widget>
                </item>
@@ -142,7 +145,8 @@
                   <string>Connect</string>
                  </property>
                  <property name="icon">
-                  <iconset theme="network-connect"/>
+                  <iconset theme="network-connect">
+                   <normaloff>.</normaloff>.</iconset>
                  </property>
                 </widget>
                </item>
@@ -152,7 +156,18 @@
                   <string>Disconnect</string>
                  </property>
                  <property name="icon">
-                  <iconset theme="network-disconnect"/>
+                  <iconset theme="network-disconnect">
+                   <normaloff>.</normaloff>.</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="sendFileButton">
+                 <property name="text">
+                  <string>Send File</string>
+                 </property>
+                 <property name="icon">
+                  <iconset theme="mail-send"/>
                  </property>
                 </widget>
                </item>
@@ -175,7 +190,8 @@
                   <string>Scan</string>
                  </property>
                  <property name="icon">
-                  <iconset theme="view-refresh"/>
+                  <iconset theme="view-refresh">
+                   <normaloff>.</normaloff>.</iconset>
                  </property>
                 </widget>
                </item>

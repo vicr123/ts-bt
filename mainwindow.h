@@ -6,6 +6,10 @@
 #include <QMenu>
 #include <QDBusMessage>
 #include <QDBusReply>
+#include <QFileDialog>
+#include <BluezQt/ObexManager>
+#include <BluezQt/ObexObjectPush>
+#include <BluezQt/ObexTransfer>
 #include "btdbus.h"
 
 using namespace BluezQt;
@@ -46,6 +50,8 @@ private slots:
     void on_disconnectButton_clicked();
 
     void on_bluetoothEnabled_toggled(bool checked);
+
+    void on_sendFileButton_clicked();
 
 private:
     Ui::MainWindow *ui;
